@@ -32,7 +32,13 @@ origins = [
     "https://spendesoundsystem-production.up.railway.app",
     "https://muntaziran-e-zahoor.github.io",
     "https://fanciful-piroshki-0985d4.netlify.app",
-    "https://web-production-6008.up.railway.app"
+    "https://web-production-6008.up.railway.app",
+    
+    # 🌐 GitHub Pages mit verschiedenen Pfaden - WICHTIG!
+    "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage",
+    "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage/",
+    "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend",
+    "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend/"
 ]
 
 # Development Mode: Alle Origins erlauben (NUR FÜR TESTS!)
