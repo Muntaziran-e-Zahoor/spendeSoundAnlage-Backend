@@ -18,28 +18,37 @@ logger = logging.getLogger(__name__)
 # 1️⃣ Umgebungsabhängige Frontend-URLs
 ENV = os.getenv("ENV", "production")
 
-# Erlaubte Origins
-origins = [
-    # 🔧 Lokale Entwicklung
-    "http://127.0.0.1:3000",
-    "http://localhost:3000",
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "http://127.0.0.1:8080",
-    "http://localhost:8080",
-    
-    # 🌐 Deployment Frontends
-    "https://spendesoundsystem-production.up.railway.app",
-    "https://muntaziran-e-zahoor.github.io",
-    "https://fanciful-piroshki-0985d4.netlify.app",
-    "https://web-production-6008.up.railway.app",
-    
-    # 🌐 GitHub Pages mit verschiedenen Pfaden - WICHTIG!
-    "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage",
-    "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage/",
-    "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend",
-    "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend/"
-]
+# Erlaubte Origins aus Environment Variable ODER Default-Liste
+env_origins = os.getenv("ALLOWED_ORIGINS", "")
+
+if env_origins:
+    # Origins aus Environment Variable verwenden (komma-getrennt)
+    origins = [origin.strip() for origin in env_origins.split(",") if origin.strip()]
+    logger.info(f"📌 CORS Origins aus Environment Variable geladen: {origins}")
+else:
+    # Fallback auf hartcodierte Liste
+    origins = [
+        # 🔧 Lokale Entwicklung
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
+        
+        # 🌐 Deployment Frontends
+        "https://spendesoundsystem-production.up.railway.app",
+        "https://muntaziran-e-zahoor.github.io",
+        "https://fanciful-piroshki-0985d4.netlify.app",
+        "https://web-production-6008.up.railway.app",
+        
+        # 🌐 GitHub Pages mit verschiedenen Pfaden - WICHTIG!
+        "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage",
+        "https://muntaziran-e-zahoor.github.io/SpendeSoundAnlage/",
+        "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend",
+        "https://muntaziran-e-zahoor.github.io/spendeSoundAnlage-Frontend/"
+    ]
+    logger.info(f"📌 CORS Origins aus Default-Liste geladen")
 
 # Development Mode: Alle Origins erlauben (NUR FÜR TESTS!)
 if ENV == "dev":
@@ -112,6 +121,8 @@ def read_root():
         "environment": ENV,
         "bot_configured": bool(BOT_TOKEN and CHAT_ID),
         "message": "Spenden-Backend für Muntazira-E-Zahoor",
+        "cors_configured": bool(origins),
+        "allowed_origins_count": len(origins) if origins != ["*"] else "all",
         "endpoints": {
             "docs": "/docs",
             "donation_erstellen": "POST /donation",
@@ -391,6 +402,7 @@ if __name__ == "__main__":
     print(f"📚 ReDoc:      http://localhost:8000/redoc")
     print("="*60)
     print(f"🤖 Telegram Bot: {'✅ Konfiguriert' if BOT_TOKEN and CHAT_ID else '❌ Nicht konfiguriert'}")
+    print(f"🔒 CORS Origins: {'Aus ENV Variable' if env_origins else 'Default Liste'}")
     print("="*60)
     port = int(os.getenv("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
