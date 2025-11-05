@@ -8,6 +8,10 @@ import sqlite3
 from typing import List
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+
+# Lade .env Datei (nur für lokale Entwicklung)
+load_dotenv()
 
 # Logging
 logging.basicConfig(level=logging.INFO)
@@ -70,9 +74,9 @@ app.add_middleware(
     max_age=3600,
 )
 
-# Telegram
-BOT_TOKEN = "8375806921:AAGjpcEOjYmqE8DpNQXL9iD5Y68Kub_0Pgo"
-CHAT_ID = "7768533941"
+# Telegram - Aus Environment Variables laden (sicher!)
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+CHAT_ID = os.getenv("CHAT_ID", "")
 
 # Datenbank
 DB_FILE = "donations.db"
